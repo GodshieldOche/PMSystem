@@ -4,9 +4,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { BadRequestError } from "../errors/bad-request";
 
-const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find();
-  res.json({ users });
+const getCurrentUser = asyncHandler(async (req, res) => {
+  res.status(200).json({ currentUser: req.user || null });
 });
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -55,4 +54,4 @@ const loginUser = asyncHandler(async (req, res) => {
     .json({ message: "Success", data: existingUser, token: userJwt });
 });
 
-export { getAllUsers, registerUser, loginUser };
+export { getCurrentUser, registerUser, loginUser };

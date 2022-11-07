@@ -1,39 +1,49 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-
+import React from "react";
+import { useRouter } from "next/router";
+import { User } from "../../typedefs";
+import { userAgent } from "next/server";
 
 interface Props {
-    organization:string
+  organizations: any[];
+  user: User;
 }
 
-const index: React.FC<Props> = ({organization}) => {
-    const router = useRouter();
+const index: React.FC<Props> = ({ organizations, user }) => {
+  const router = useRouter();
 
-    const toggleSideBar = () => {
-        document.querySelector('aside')?.classList.toggle('hide');
-        document.querySelector('.fa-bars')?.classList.toggle('fa-close');
+  const toggleSideBar = () => {
+    document.querySelector("aside")?.classList.toggle("hide");
+    document.querySelector(".fa-bars")?.classList.toggle("fa-close");
 
-        if (document.querySelector('aside')?.classList.contains('hide')){
-            let element = document.querySelector('.main-content') as HTMLElement;
-            element.style.width = '100%'
-        }
+    if (document.querySelector("aside")?.classList.contains("hide")) {
+      let element = document.querySelector(".main-content") as HTMLElement;
+      element.style.width = "100%";
     }
+  };
 
-    return (
-        <header>
-            <p>{organization} : {router.pathname.substring(1, router.pathname.length)}</p>
+  return (
+    <header>
+      <div>
+        {organizations.length >= 1 ? (
+          <>
+            {organizations[0]} :{" "}
+            {router.pathname.substring(1, router.pathname.length)}
+          </>
+        ) : (
+          <div>Add or Join an Organisation</div>
+        )}
+      </div>
 
-            <div className="user">
-            <i className="fa fa-bell"></i>
-            
-            <img className="user-image" src="/user.png" alt="user icon"/>
-            <p className="user-name">Victoria Jones</p>
+      <div className="user">
+        <i className="fa fa-bell"></i>
 
-            <i className="fa fa-bars" onClick={toggleSideBar}></i>
+        <img className="user-image" src="/user.png" alt="user icon" />
+        <p className="user-name">{user?.fullName}</p>
 
-            </div>
-        </header>
-    )
-}
+        <i className="fa fa-bars" onClick={toggleSideBar}></i>
+      </div>
+    </header>
+  );
+};
 
-export default index
+export default index;
