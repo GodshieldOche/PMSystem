@@ -3,18 +3,22 @@ import Sidebar from '../Sidebar';
 import Header from '../Header';
 import { useRouter } from 'next/router';
 import axios from 'axios'
-
+import { User } from "../../typedefs";
+import { getToken } from "../../helper";
 
 interface Props {
-    children: React.ReactNode,
+  children: React.ReactNode;
+  currentUser: User;
 }
 
-const Layout: React.FC<Props> = ({children}) => {
+const Layout: React.FC<Props> = ({children, currentUser}) => {
     const [smallScreen, setSmallScreen] = useState(false);
-    const [organization, setOrganization] = useState('Edu Concepts');
+    const [activeOrganization, setActiveOrganization] = useState('Edu Concepts');
+    const [organizations, setOrganizations] = useState([]);
     const [modal, setModal] = useState(false);
     const user = '63690a8df67be17b2f936111';
     const token = '';
+    
 
     const [inputs, setInputs] = useState({
         name: '',
@@ -32,7 +36,7 @@ const Layout: React.FC<Props> = ({children}) => {
 
     const fetchUserDetails = async () =>{
         try {
-            const response = await axios.get(`/api/auth?organization=${organization}&token=${token}`);
+            const response = await axios.get(`/api/auth?organization=${activeOrganization}&token=${token}`);
             
     
     
@@ -42,7 +46,7 @@ const Layout: React.FC<Props> = ({children}) => {
     }
 
     const changeOrganization = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setOrganization(event.target.value);
+        setActiveOrganization(event.target.value);
         fetchUserDetails();
     }
 
@@ -72,77 +76,72 @@ const Layout: React.FC<Props> = ({children}) => {
     }
     
 
-    useEffect(() => {
-        screen.width < 900? setSmallScreen(true): setSmallScreen(false);
-        // fetchUserDetails();
 
-    }, [])
-    
-  return (
-    <div>
-        <div className="main">
-            {
-                !router.pathname.includes('/auth') && <>
-                    <Sidebar smallScreen={smallScreen} ></Sidebar>
+ 
+    return (
+        <div>
+            <div className="main">
+                {
+                    !router.pathname.includes('/auth') && <>
+                        <Sidebar smallScreen={smallScreen} ></Sidebar>
 
-                    <div className="main-content">
-                        <Header organization={organization}></Header>
+                        <div className="main-content">
+                            <Header activeOrganization={activeOrganization} organizations={organizations} user={currentUser}></Header>
 
-                        <div className="main-content-dashboard">
-                            <div className="account-select">
-                                <div>
-                                    <p>Change Organization</p>
-                                    <select name="account" id="" value={organization} onChange={(event) => changeOrganization(event)}>
-                                        <option value="Edu Concepts">Edu Concepts</option>
-                                        <option value="Prime Concepts">Prime Concepts</option>
-                                    </select>
+                            <div className="main-content-dashboard">
+                                <div className="account-select">
+                                    <div>
+                                        <p>Change Organization</p>
+                                        <select name="account" id="" value={activeOrganization} onChange={(event) => changeOrganization(event)}>
+                                            <option value="Edu Concepts">Edu Concepts</option>
+                                            <option value="Prime Concepts">Prime Concepts</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <p>Create Organization</p>
+                                        <i className='fa fa-plus' onClick={() => setModal(true)}></i>
+                                    </div>
+                                    
                                 </div>
 
-                                <div>
-                                    <p>Create Organization</p>
-                                    <i className='fa fa-plus' onClick={() => setModal(true)}></i>
-                                </div>
-                                
+                                {children}
+
                             </div>
+                        </div>   
+                    </>
+                }
 
-                            {children}
+                {
+                    router.pathname.includes('/auth') && <>
+                        
 
-                        </div>
-                    </div>   
-                </>
-            }
-
-            {
-                router.pathname.includes('/auth') && <>
+                        {children}
+                    </>
+                }
                     
+            </div> 
 
-                    {children}
-                </>
-            }
-                
-        </div> 
+            { modal && 
+                <div className="modal-overlay" >
+                    <div className="verify-modal">
+                        <div className="verify-modal-header">
+                            <p>Create New Organization</p>
+                            <i className="fa fa-close" onClick={() => setModal(false)}></i>
+                        </div>
 
-        { modal && 
-            <div className="modal-overlay" >
-                <div className="verify-modal">
-                    <div className="verify-modal-header">
-                        <p>Create New Organization</p>
-                        <i className="fa fa-close" onClick={() => setModal(false)}></i>
+                        <label>Enter Organization Name</label><br/>
+                        <input type="text" name='name' value={inputs.name} placeholder="" onChange={handleChange} /><br/>
+
+                        <label>Description</label><br/>
+                        <input type="text" name='description' value={inputs.description} placeholder="" onChange={handleChange} /><br/>
+
+                        <button className="btn-primary" onClick={createOrganization}>Create</button>
                     </div>
-
-                    <label>Enter Organization Name</label><br/>
-                    <input type="text" name='name' value={inputs.name} placeholder="" onChange={handleChange} /><br/>
-
-                    <label>Description</label><br/>
-                    <input type="text" name='description' value={inputs.description} placeholder="" onChange={handleChange} /><br/>
-
-                    <button className="btn-primary" onClick={createOrganization}>Create</button>
                 </div>
-            </div>
-        }
-    </div>
-    
-  )
+            }
+        </div>
+    )
 }
 
-export default Layout
+export default Layout;

@@ -37,8 +37,7 @@ export const currentUser = (
       token = req.headers.authorization.split(" ")[1];
       decoded = jwt.verify(token, process.env.SECRET!) as jwt.JwtPayload;
     } else {
-      res.status(401);
-      throw new NotAuthorizedError();
+      return next();
     }
   } catch (error) {
     return next(error);
@@ -46,8 +45,7 @@ export const currentUser = (
 
   try {
     if (!token) {
-      res.status(401);
-      throw new NotAuthorizedError();
+      return next();
     }
   } catch (error) {
     return next(error);
