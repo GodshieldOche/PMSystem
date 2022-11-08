@@ -12,6 +12,7 @@ const index: React.FC<Props> = ({smallScreen}) => {
     <aside className={smallScreen? 'hide': ''}>
         <div className="logo">PM System</div>
 
+
         <ul>
             <Link href="/dashboard"><li className={router.pathname=='/dashboard'? 'active':''}><i className="fa fa-th-large"></i>Dashboard</li></Link>
             <Link href="/projects"><li className={router.pathname.includes('/projects') ? 'active':''}><i className="fa fa-tasks"></i>Projects</li></Link>
@@ -21,6 +22,8 @@ const index: React.FC<Props> = ({smallScreen}) => {
 
             <li className="logout"><i className="fa fa-sign-out"></i>Logout</li>
         </ul>
+
+        
         
     </aside>
   )
