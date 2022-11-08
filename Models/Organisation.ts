@@ -24,6 +24,22 @@ const organisationSchema = new mongoose.Schema({
       },
     },
   ],
+  invites: [
+    {
+      email: {
+        type: String,
+        required: true,
+      },
+      status: {
+        type: String,
+        required: true,
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
   superAdmin: {
     type: Types.ObjectId,
     require: true,

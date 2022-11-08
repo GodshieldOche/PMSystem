@@ -28,6 +28,27 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
+  inbox: [
+    {
+      name: {
+        type: String,
+        required: true,
+      },
+      message: {
+        type: String,
+        required: true,
+      },
+      organisation: {
+        type: Types.ObjectId,
+        required: true,
+        ref: "User",
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
   assigned: {
     type: Number,
     default: 0,
