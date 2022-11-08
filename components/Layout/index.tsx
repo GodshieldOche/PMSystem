@@ -13,12 +13,15 @@ interface Props {
 
 const Layout: React.FC<Props> = ({ children, currentUser }) => {
   const [smallScreen, setSmallScreen] = useState(false);
+
   const [activeOrganization, setActiveOrganization] = useState(
-    currentUser?.organisations[0]?.organisationId?.name
+    currentUser?.organisations[0]?.organisationId
   );
   const [organizations, setOrganizations] = useState(
     currentUser?.organisations
   );
+  const [organizationDetails, setOrganizationDetails] = useState([]);
+
   const [modal, setModal] = useState(false);
 
   const [inputs, setInputs] = useState({
@@ -26,6 +29,7 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
     description: "",
     superadmin: currentUser?._id,
   });
+  
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
@@ -35,13 +39,22 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
 
   const router = useRouter();
 
-  const fetchUserDetails = async () => {
+  const fetchOrganizationDetails = async () => {
+    console.log(activeOrganization);
     let token = await getToken();
 
     try {
       const response = await axios.get(
-        `/api/auth?organization=${activeOrganization}&token=${token}`
+        `/api/organisations/${activeOrganization._id}`, {
+          headers:{
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token.token}`,
+            Accept: "application/json",
+          }
+        }
       );
+      console.log(response);
+      setOrganizationDetails(response.data);
     } catch (error) {
       alert(error);
     }
@@ -49,7 +62,7 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
 
   const changeOrganization = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setActiveOrganization(event.target.value);
-    fetchUserDetails();
+    fetchOrganizationDetails();
   };
 
   const createOrganization = async (
@@ -68,19 +81,13 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
       });
       if (response.status == 201) {
         alert("Organization created successfully");
-        setModal(false);
-        setInputs({
-          name: "",
-          description: "",
-          superadmin: currentUser._id,
-        });
+        location.reload();
       } else {
         alert("Issues creating organization, Try again");
       }
     } catch (error) {
       alert(error);
     }
-    // fetchUserDetails();
   };
 
   return (
@@ -92,7 +99,7 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
 
             <div className="main-content">
               <Header
-                activeOrganization={activeOrganization}
+                activeOrganization={activeOrganization.name}
                 organizations={organizations}
                 user={currentUser}
               ></Header>
@@ -108,7 +115,7 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
                       onChange={(event) => changeOrganization(event)}
                     >
                       {organizations.map((item, index) => (
-                        <option key={index} value={item?.organisationId?._id}>
+                        <option key={index} value={item?.organisationId}>
                           {item?.organisationId?.name}
                         </option>
                       ))}
