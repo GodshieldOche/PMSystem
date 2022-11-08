@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         ref: "User",
       },
+      status: {
+        type: String,
+        default: "PENDING",
+      },
       createdAt: {
         type: Date,
         default: Date.now,
