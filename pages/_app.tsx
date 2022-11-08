@@ -33,7 +33,7 @@ MyApp.getInitialProps = async (appContext: any) => {
     const res = await fetch(`${origin}/api/users`, requestOptions);
     user = await res.json();
   }
-
+  console.log(JSON.stringify(user));
   return {
     pageProps: {
       ...appProps.pageProps,

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { NotAuthorizedError } from "../errors/not-authorized-error";
+import Organisation from "../Models/Organisation";
 import User from "../Models/User";
 
 interface UserPayload {
@@ -54,6 +55,11 @@ export const currentUser = (
   if (decoded.id) {
     User.findById(decoded.id)
       .select("-password")
+      .populate({
+        path: "organisations.organisationId",
+        select: "name description _id members projects",
+        model: Organisation,
+      })
       .then((user) => {
         req.user = user;
         next();

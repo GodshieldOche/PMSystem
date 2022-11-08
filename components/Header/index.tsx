@@ -5,11 +5,15 @@ import { userAgent } from "next/server";
 
 interface Props {
   organizations: any[];
-  activeOrganization: string,
+  activeOrganization: string;
   user: User;
 }
 
-const index: React.FC<Props> = ({ organizations, user, activeOrganization }) => {
+const index: React.FC<Props> = ({
+  organizations,
+  user,
+  activeOrganization,
+}) => {
   const router = useRouter();
 
   const toggleSideBar = () => {
@@ -25,9 +29,9 @@ const index: React.FC<Props> = ({ organizations, user, activeOrganization }) => 
   return (
     <header>
       <div>
-        {organizations.length >= 1 ? (
+        {organizations?.length >= 1 ? (
           <>
-            {activeOrganization} :{organizations[0]}
+            {activeOrganization}: {""}
             {router.pathname.substring(1, router.pathname.length)}
           </>
         ) : (
