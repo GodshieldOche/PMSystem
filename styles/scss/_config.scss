@@ -1,0 +1,115 @@
+//my main configuration css file where shared css and variables are defined
+
+@import url('http://fonts.cdnfonts.com/css/lato');
+
+
+$main-font: "Lato";
+$dark-color: #243444;
+$background-color: rgb(255, 255, 255);
+$grey-color:#7E7E7E;
+$primary-color:#0479F9;
+$light-blue:#E6F2FF;
+$secondary-color:#14478E;
+$sec-background:#F5F5F5;
+$box-shadow: 0px 5px 10px 2px rgba(36, 52, 68, 0.1);
+$white-color: #FFFFFF;
+$orange-color: orange;
+
+body{
+    background-color: $background-color;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    margin:0;
+    padding:0;
+    font-family: $main-font;
+}
+
+.hide{
+    display: none;
+}
+.fa-close{
+    cursor: pointer;
+}
+
+.fa-arrow-down, .fa-arrow-up, .fa-arrow-right, .fa-plus, .fa-user{
+    background-color: #FFD9D9;
+    background-size: cover;
+    color:#FF0000;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    border-radius: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+label{
+    font-weight: 500;
+    font-size: 14px;
+}
+
+input:focus{
+    border: 1px solid $primary-color;
+}
+
+.btn-primary{
+    background-color: $primary-color;
+    color: $white-color;
+    width: 100px;
+    height: 50px;
+    margin: 20px 0;
+    border:none;
+    border-radius: 5px;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.btn-white{
+    width:100%;
+    background-color: $white-color;
+    color:$dark-color;
+    border: 1px solid $grey-color;
+    height:80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family:$main-font;
+    font-weight: 400;
+    font-size: 16px;
+    margin-top: 20px;
+    padding: 0 15px;
+    cursor: pointer;
+
+
+    i{
+        color:$grey-color
+    }
+
+    .desc{
+        text-align: left;
+
+        p{
+            margin: 0;
+        }
+
+        .content{
+            font-size: 14px;
+            color: $grey-color;
+            margin-top: 5px;
+        }
+    }
+    
+}
+
+.btn-copy{
+    width:60%;
+    height:50px;
+    background-color: $light-blue;
+    border: none;
+    font-weight: 500;
+    font-size: 14px;
+    color: $primary-color;
+    
+}
