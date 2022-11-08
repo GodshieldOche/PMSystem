@@ -3,6 +3,8 @@ import asyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { BadRequestError } from "../errors/bad-request";
+import Organisation from "../Models/Organisation";
+import { NotAuthorizedError } from "../errors/not-authorized-error";
 
 const getCurrentUser = asyncHandler(async (req, res) => {
   res.status(200).json({ currentUser: req.user || null });
@@ -54,4 +56,60 @@ const loginUser = asyncHandler(async (req, res) => {
     .json({ message: "Success", data: existingUser, token: userJwt });
 });
 
-export { getCurrentUser, registerUser, loginUser };
+const acceptInvite = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user?._id);
+  const organisation = await Organisation.findById(req.body.organisation);
+
+  const notInvited = organisation.invites.find(
+    (item: any) => item.email.toString() === req?.user?.email.toString()
+  );
+
+  if (!notInvited) {
+    throw new NotAuthorizedError();
+  }
+
+  let alreadyMemeber;
+
+  alreadyMemeber = organisation.members.find(
+    (item: any) => item.userId.toString() === req.user?._id.toString()
+  );
+
+  // Add user to organisation
+  if (!alreadyMemeber) {
+    organisation.members.push({ userId: req.user?._id });
+  }
+
+  organisation.invites.forEach((item: any) => {
+    if (item.email.toString() === req?.user?.email.toString()) {
+      return (item.status = "ACCEPTED");
+    }
+  });
+
+  await organisation.save();
+
+  alreadyMemeber = user.organisations.find(
+    (item: any) =>
+      item.organisationId.toString() === organisation._id.toString()
+  );
+
+  if (!alreadyMemeber) {
+    user.organisations.push({ organisationId: organisation._id });
+  }
+
+  user.inbox.forEach((item: any) => {
+    if (item.organisation.toString() === req.body.organisation.toString()) {
+      return (item.status = "ACCEPTED");
+    }
+  });
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    user,
+    organisation,
+    message: "Accepted Invitation",
+  });
+});
+
+export { getCurrentUser, registerUser, loginUser, acceptInvite };
