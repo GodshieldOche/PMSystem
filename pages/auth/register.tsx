@@ -19,14 +19,16 @@ const register = () => {
 
   const handleSubmit = async (event:  React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-   
+
       try {
-        const response = await axios.post('/api/auth', inputs);
+        const response =  (!inputs.fullName || !inputs.fullName || !inputs.password)? alert('All Fields are required'): await axios.post('/api/auth', inputs);
+        
         setInputs({
           fullName: '',
           email: '',
           password: '',
-        })
+        });
+        window.location.href = "http://www.localhost:3000/auth/login";
 
 
       } catch (error) {
