@@ -1,4 +1,6 @@
 import asyncHandler from "express-async-handler";
+import { BadRequestError } from "../errors/bad-request";
+import { NotAuthorizedError } from "../errors/not-authorized-error";
 import Organisation from "../Models/Organisation";
 import User from "../Models/User";
 
@@ -49,21 +51,33 @@ const getOrganisation = asyncHandler(async (req, res) => {
 });
 
 const addMemebers = asyncHandler(async (req, res) => {
-  const body = req.body;
-  const organisation = await Organisation.create(body);
+  const { email, organisationId } = req.body;
+  const organisation = await Organisation.findById(organisationId);
+  const user = await User.findOne({ email });
 
-  organisation.members.push({ userId: req.user?._id });
+  if (organisation.superAdmin.toString() !== req.user?._id.toString()) {
+    throw new NotAuthorizedError();
+  }
+
+  if (!email) {
+    throw new BadRequestError("Invalid Email");
+  }
+
+  organisation.invites.push({ email });
 
   await organisation.save();
 
-  const user = await User.findOne({ email: body.email });
-
-  user.organisations.push({ organisationId: organisation._id });
+  user.inbox.push({
+    name: req.user?.fullName,
+    message: `${req.user?.fullName} has invited you to join ${organisation.name}`,
+    organisation: organisation._id,
+  });
 
   await user.save();
 
-  res.status(201).json({
+  res.status(200).json({
     success: true,
+    user,
     organisation,
     message: "Created organisation",
   });

@@ -32,6 +32,7 @@ const organisationSchema = new mongoose.Schema({
       },
       status: {
         type: String,
+        default: "PENDING",
         required: true,
       },
       createdAt: {
