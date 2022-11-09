@@ -28,7 +28,7 @@ const register = () => {
           email: '',
           password: '',
         });
-        window.location.href = "http://www.localhost:3000/auth/login";
+        window.location.href = "http://localhost:3000/auth/login";
 
 
       } catch (error) {
