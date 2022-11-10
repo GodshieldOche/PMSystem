@@ -6,6 +6,20 @@ import { BadRequestError } from "../errors/bad-request";
 import Organisation from "../Models/Organisation";
 import { NotAuthorizedError } from "../errors/not-authorized-error";
 
+const getUsers = asyncHandler(async (req, res) => {
+  const keyword = req.query.keyword
+    ? {
+        email: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
+    : {};
+  const users = await User.find(keyword);
+
+  res.status(200).json({ users });
+});
+
 const getCurrentUser = asyncHandler(async (req, res) => {
   res.status(200).json({ currentUser: req.user || null });
 });
@@ -112,4 +126,4 @@ const acceptInvite = asyncHandler(async (req, res) => {
   });
 });
 
-export { getCurrentUser, registerUser, loginUser, acceptInvite };
+export { getCurrentUser, registerUser, loginUser, getUsers, acceptInvite };
