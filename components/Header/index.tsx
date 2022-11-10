@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { useRouter } from "next/router";
 import { User } from "../../typedefs";
 import { userAgent } from "next/server";
@@ -26,6 +26,9 @@ const index: React.FC<Props> = ({
     }
   };
 
+  const messages = user?.inbox;
+  
+
   const [showNoti, setShowNoti] = useState(false);
 
   return (
@@ -48,36 +51,20 @@ const index: React.FC<Props> = ({
           {showNoti && 
             <div className="notiBox fine-scrollbar">
               <h6>Notifications</h6>
-              <div className="notiBox-content">
+              {messages.length?
 
-                <p>Emeka Invited You To Join Edu Concept Organization</p>
-                <button>Accept</button>
+                messages.map((item,index) =>{
+                  return <div key={index} className="notiBox-content">
 
-              </div>
+                  <p>Emeka Invited You To Join Edu Concept Organization</p>
+                  <button>Accept</button>
 
-              <div className="notiBox-content">
+                  </div>
+                }):
 
-                <p>Emeka assigned task Frontend to You</p>
-                <button>Accept</button>
+                <p className="empty">No Notifications</p>
+              }
 
-              </div>
-
-              <div className="notiBox-content">
-
-                <p>Emeka Invited You To Join Edu Concept Organization</p>
-                <button>Accept</button>
-
-              </div>
-
-              <div className="notiBox-content">
-
-                <p>Emeka Invited You To Join Edu Concept Organization</p>
-                <button>Accept</button>
-
-              </div>
-
-
-              
             </div>
           }
         

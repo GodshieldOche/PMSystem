@@ -126,7 +126,7 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
                     <p>Change Organization</p>
                     <form>
                       <select
-                        placeholder={activeOrganization.name}
+                        placeholder={activeOrganization?.name}
                         // value={activeOrganization.name}
                         onChange={changeOrganization}
                       >

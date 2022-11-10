@@ -132,8 +132,16 @@
                         background-color: $background-color;
                         border:1px solid $primary-color;
                         top:20px;
+                        left:-115px;
                         border-radius: 5px;
                         overflow-y: auto;
+
+                        .empty{
+                            text-align: center;
+                            color: $dark-color;
+                            font-size: 15px;
+                            font-family: $main-font;
+                        }
                         h6{
                             margin:0;
                             padding:0;
@@ -145,6 +153,8 @@
                             justify-content:space-between;
                             align-items: center;
                             margin:10px 0;
+                            font-family: $main-font;
+
 
                             p{
                                 margin:0;

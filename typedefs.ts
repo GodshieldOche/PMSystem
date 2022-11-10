@@ -3,9 +3,9 @@ export type User = {
   fullName: string;
   email: string;
   assigned: number;
+  inbox:any[];
   workingOn: number;
   organisations: any[];
-  inbox: any[];
   createdAt: string;
   __v: number;
 };
