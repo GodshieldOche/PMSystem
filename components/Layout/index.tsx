@@ -38,7 +38,6 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
 
   const fetchOrganizationDetails = async (id: any) => {
     let token = await getToken();
-    console.log(activeOrganization);
 
     try {
       const response = await axios.get(`/api/organisations/${id}`, {
@@ -48,7 +47,6 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
           Accept: "application/json",
         },
       });
-      console.log(response);
       setOrganizationDetails(response.data);
 
     } catch (error) {
