@@ -14,9 +14,7 @@ interface Props {
 const Layout: React.FC<Props> = ({ children, currentUser }) => {
   const [smallScreen, setSmallScreen] = useState(false);
 
-  const [activeOrganization, setActiveOrganization] = useState(
-    currentUser?.organisations[0]?.organisationId
-  );
+  const [activeOrganization, setActiveOrganization] = useState<any>({});
   const [organizations, setOrganizations] = useState(
     currentUser?.organisations
   );
@@ -38,20 +36,17 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
 
   const router = useRouter();
 
-  const fetchOrganizationDetails = async () => {
+  const fetchOrganizationDetails = async (id: any) => {
     let token = await getToken();
 
     try {
-      const response = await axios.get(
-        `/api/organisations/${activeOrganization._id}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token.token}`,
-            Accept: "application/json",
-          },
-        }
-      );
+      const response = await axios.get(`/api/organisations/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.token}`,
+          Accept: "application/json",
+        },
+      });
       console.log(response);
       setOrganizationDetails(response.data);
     } catch (error) {
@@ -59,13 +54,31 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
     }
   };
 
+  useEffect(() => {
+    let active: any = localStorage.getItem("activeOrganization");
+    if (active !== null) {
+      active = JSON.parse(active);
+      fetchOrganizationDetails(active._id);
+      setActiveOrganization(active);
+    } else {
+      fetchOrganizationDetails(
+        currentUser?.organisations[0]?.organisationId._id
+      );
+      setActiveOrganization(currentUser?.organisations[0]?.organisationId);
+    }
+  }, [currentUser?.organisations]);
+
   const changeOrganization = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const id = event.target.value;
     const organization = organizations.find(
       (item) => item?.organisationId?._id === id
     );
     setActiveOrganization(organization?.organisationId);
-    fetchOrganizationDetails();
+    fetchOrganizationDetails(organization?.organisationId._id);
+    localStorage.setItem(
+      "activeOrganization",
+      JSON.stringify(organization?.organisationId)
+    );
   };
 
   const createOrganization = async (
@@ -102,7 +115,7 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
 
             <div className="main-content">
               <Header
-                activeOrganization={activeOrganization.name}
+                activeOrganization={activeOrganization?.name}
                 organizations={organizations}
                 user={currentUser}
               ></Header>
@@ -111,18 +124,19 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
                 <div className="account-select">
                   <div>
                     <p>Change Organization</p>
-                    <select
-                      name="account"
-                      id=""
-                      // value={activeOrganization.name}
-                      onChange={changeOrganization}
-                    >
-                      {organizations.map((item, index) => (
-                        <option key={index} value={item?.organisationId?._id}>
-                          {item?.organisationId?.name}
-                        </option>
-                      ))}
-                    </select>
+                    <form>
+                      <select
+                        placeholder={activeOrganization.name}
+                        // value={activeOrganization.name}
+                        onChange={changeOrganization}
+                      >
+                        {organizations.map((item, index) => (
+                          <option key={index} value={item?.organisationId?._id}>
+                            {item?.organisationId?.name}
+                          </option>
+                        ))}
+                      </select>
+                    </form>
                   </div>
 
                   <div>
