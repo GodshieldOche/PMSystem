@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { useRouter } from "next/router";
 import { User } from "../../typedefs";
 import { userAgent } from "next/server";
@@ -26,6 +26,8 @@ const index: React.FC<Props> = ({
     }
   };
 
+  const [showNoti, setShowNoti] = useState(false);
+
   return (
     <header>
       <div>
@@ -40,7 +42,46 @@ const index: React.FC<Props> = ({
       </div>
 
       <div className="user">
-        <i className="fa fa-bell"></i>
+        <i className="fa fa-bell" onClick={()=>setShowNoti(!showNoti)}>
+          <i className="fa fa-circle"></i>
+
+          {showNoti && 
+            <div className="notiBox fine-scrollbar">
+              <h6>Notifications</h6>
+              <div className="notiBox-content">
+
+                <p>Emeka Invited You To Join Edu Concept Organization</p>
+                <button>Accept</button>
+
+              </div>
+
+              <div className="notiBox-content">
+
+                <p>Emeka assigned task Frontend to You</p>
+                <button>Accept</button>
+
+              </div>
+
+              <div className="notiBox-content">
+
+                <p>Emeka Invited You To Join Edu Concept Organization</p>
+                <button>Accept</button>
+
+              </div>
+
+              <div className="notiBox-content">
+
+                <p>Emeka Invited You To Join Edu Concept Organization</p>
+                <button>Accept</button>
+
+              </div>
+
+
+              
+            </div>
+          }
+        
+        </i>
 
         <img className="user-image" src="/user.png" alt="user icon" />
         <p className="user-name">{user?.fullName}</p>

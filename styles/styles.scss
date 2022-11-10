@@ -110,6 +110,62 @@
                 align-items: center;
                 min-width:20%;
 
+                .fa-bell{
+                    position: relative;
+                    color:blue;
+    
+                    .fa-circle{
+                        position: absolute;
+                        top:-3px;
+                        left:5px;
+                        font-size: 7px;;
+                        color:red;
+                    }
+
+                    .notiBox{
+                        min-width:300px;
+                        max-height: 200px;
+                        position: absolute;
+                        padding:10px 20px;
+                        box-shadow: $box-shadow;
+                        z-index: 1;
+                        background-color: $background-color;
+                        border:1px solid $primary-color;
+                        top:20px;
+                        border-radius: 5px;
+                        overflow-y: auto;
+                        h6{
+                            margin:0;
+                            padding:0;
+                            text-align: center;
+                        }
+
+                        &-content{
+                            display: flex;
+                            justify-content:space-between;
+                            align-items: center;
+                            margin:10px 0;
+
+                            p{
+                                margin:0;
+                                padding:0;
+                                font-size:8px;
+                                font-weight: 300;
+                                text-transform: lowercase;
+                                line-height: normal;
+                                color: $dark-color;
+                            }
+
+                            button{
+                                border:0.5px solid $primary-color;
+                                color:$primary-color;
+                                border-radius:10px;
+                                font-size:10px;
+                            }
+                        }
+                    }
+                }
+
                 &-image{
                     width:50px;
                     height: 50px;
@@ -132,6 +188,10 @@
                 .fa-close{
                     font-size: 20px;
                 }
+
+                
+
+                
             }
 
             .account-drop-down{
