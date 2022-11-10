@@ -11,7 +11,6 @@ export default function App(props:any) {
     const [inputs, setInputs] = useState({
         name: "",
         description: "",
-        organisation: activeOrganization._id,
     });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +56,7 @@ export default function App(props:any) {
 
     let token = await getToken();
     try {
-      const response = await axios.post(`/api/projects`, inputs, {
+      const response = await axios.post(`/api/projects`, {name:inputs.name, description: inputs.description, organisation:activeOrganization._id}, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token.token}`,
