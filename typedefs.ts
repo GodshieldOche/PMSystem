@@ -5,6 +5,7 @@ export type User = {
   assigned: number;
   workingOn: number;
   organisations: any[];
+  inbox: any[];
   createdAt: string;
   __v: number;
 };

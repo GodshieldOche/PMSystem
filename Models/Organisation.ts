@@ -43,7 +43,7 @@ const organisationSchema = new mongoose.Schema({
   ],
   superAdmin: {
     type: Types.ObjectId,
-    require: true,
+    required: true,
     ref: "user",
   },
   description: {
