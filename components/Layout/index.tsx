@@ -50,7 +50,7 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
       setOrganizationDetails(response.data);
 
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
 
@@ -102,7 +102,7 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
         alert("Issues creating organization, Try again");
       }
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
 
