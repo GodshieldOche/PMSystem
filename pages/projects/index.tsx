@@ -7,10 +7,11 @@ import { getToken } from "../../helper";
 export default function App(props:any) {
     const currentUser = props.currentUser;
     const [modal, setModal] = useState(false);
+    const [activeOrganization, setActiveOrganization] = useState<any>([]);
     const [inputs, setInputs] = useState({
         name: "",
         description: "",
-        superadmin: currentUser?._id,
+        organisation: activeOrganization._id,
     });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,6 +20,36 @@ export default function App(props:any) {
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
+  const fetchOrganizationDetails = async (id: any) => {
+    let token = await getToken();
+
+    try {
+      const response = await axios.get(`/api/organisations/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.token}`,
+          Accept: "application/json",
+        },
+      });
+      setActiveOrganization(response.data.organisation);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  useEffect(() => {
+    let active: any = localStorage.getItem("activeOrganization");
+    if (active !== null) {
+      active = JSON.parse(active);
+      fetchOrganizationDetails(active._id);
+    } else {
+      fetchOrganizationDetails(
+        currentUser?.organisations[0]?.organisationId._id
+      );
+    }
+  }, [currentUser?.organisations]);
+  
+
   const createProject = async (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -26,7 +57,7 @@ export default function App(props:any) {
 
     let token = await getToken();
     try {
-      const response = await axios.post(`/api/organisations`, inputs, {
+      const response = await axios.post(`/api/projects`, inputs, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token.token}`,
@@ -34,10 +65,10 @@ export default function App(props:any) {
         },
       });
       if (response.status == 201) {
-        alert("Organization created successfully");
+        alert("Project created successfully");
         location.reload();
       } else {
-        alert("Issues creating organization, Try again");
+        alert("Issues creating Project, Try again");
       }
     } catch (error) {
       alert(error);
