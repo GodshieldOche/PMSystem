@@ -29,7 +29,6 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
     description: "",
     superadmin: currentUser?._id,
   });
-  
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
@@ -40,17 +39,17 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
   const router = useRouter();
 
   const fetchOrganizationDetails = async () => {
-    console.log(activeOrganization);
     let token = await getToken();
 
     try {
       const response = await axios.get(
-        `/api/organisations/${activeOrganization._id}`, {
-          headers:{
+        `/api/organisations/${activeOrganization._id}`,
+        {
+          headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token.token}`,
             Accept: "application/json",
-          }
+          },
         }
       );
       console.log(response);
@@ -61,7 +60,11 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
   };
 
   const changeOrganization = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setActiveOrganization(event.target.value);
+    const id = event.target.value;
+    const organization = organizations.find(
+      (item) => item?.organisationId?._id === id
+    );
+    setActiveOrganization(organization?.organisationId);
     fetchOrganizationDetails();
   };
 
@@ -111,11 +114,11 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
                     <select
                       name="account"
                       id=""
-                      value={activeOrganization}
-                      onChange={(event) => changeOrganization(event)}
+                      // value={activeOrganization.name}
+                      onChange={changeOrganization}
                     >
                       {organizations.map((item, index) => (
-                        <option key={index} value={item?.organisationId}>
+                        <option key={index} value={item?.organisationId?._id}>
                           {item?.organisationId?.name}
                         </option>
                       ))}

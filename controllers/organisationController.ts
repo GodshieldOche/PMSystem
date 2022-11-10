@@ -35,7 +35,7 @@ const getOrganisation = asyncHandler(async (req, res) => {
     .populate({
       path: "members.userId",
       select: "fullName email workingOn assigned",
-      model: Organisation,
+      model: User,
     })
     .populate({
       path: "projects.projectId",
