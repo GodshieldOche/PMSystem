@@ -8,8 +8,6 @@ export default function App(props:any) {
   const [teams, setTeams] = useState<any[]>([]);
   const [searchedUsers, setSearchedUsers] = useState<any[]>([]);
 
-  console.log(currentUser);
-
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
     let token = await getToken();
