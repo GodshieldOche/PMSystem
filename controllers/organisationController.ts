@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import { BadRequestError } from "../errors/bad-request";
 import { NotAuthorizedError } from "../errors/not-authorized-error";
 import Organisation from "../Models/Organisation";
+import Projects from "../Models/Projects";
 import User from "../Models/User";
 
 const getAllOrganisations = asyncHandler(async (req, res) => {
@@ -40,7 +41,7 @@ const getOrganisation = asyncHandler(async (req, res) => {
     .populate({
       path: "projects.projectId",
       select: "name description team issues",
-      model: Organisation,
+      model: Projects,
     });
 
   res.status(200).json({

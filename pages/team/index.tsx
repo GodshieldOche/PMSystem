@@ -11,6 +11,8 @@ export default function App(props: any) {
   const [searchedUsers, setSearchedUsers] = useState<any[]>([]);
   const currentUser = props.currentUser;
 
+  console.log(currentUser);
+
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
     let token = await getToken();

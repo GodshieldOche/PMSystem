@@ -25,7 +25,7 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
   const [inputs, setInputs] = useState({
     name: "",
     description: "",
-    superadmin: currentUser?._id,
+    superAdmin: currentUser?._id,
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +48,6 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
         },
       });
       setOrganizationDetails(response.data);
-
     } catch (error) {
       console.log(error);
     }

@@ -1,7 +1,9 @@
 import asyncHandler from "express-async-handler";
 import { NotAuthorizedError } from "../errors/not-authorized-error";
+import Issues from "../Models/Issues";
 import Organisation from "../Models/Organisation";
 import Project from "../Models/Projects";
+import User from "../Models/User";
 
 const getAllProjects = asyncHandler(async (req, res) => {
   const projects = await Project.find();
@@ -22,11 +24,36 @@ const createProject = asyncHandler(async (req, res) => {
 
   await project.save();
 
+  organisation.projects.push({ projectId: project._id });
+
+  await organisation.save();
+
   res.status(201).json({
     success: true,
     project,
+    organisation,
     message: "Created Project",
   });
 });
 
-export { getAllProjects, createProject };
+const getProject = asyncHandler(async (req, res) => {
+  const project = await Project.findById(req.query.id)
+    .populate({
+      path: "team.userId",
+      select: "fullName email workingOn assigned",
+      model: User,
+    })
+    .populate({
+      path: "issues.issuesId",
+      select: "name description status issues deadline",
+      model: Issues,
+    });
+
+  res.status(200).json({
+    success: true,
+    project,
+    message: "Successful",
+  });
+});
+
+export { getAllProjects, createProject, getProject };
