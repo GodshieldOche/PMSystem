@@ -31,6 +31,10 @@ const IssueModel = new mongoose.Schema({
     type: Types.ObjectId,
     ref: "user",
   },
+  deadline: {
+    type: Date,
+    required: true,
+  },
 });
 
 export default mongoose.models.Issue || mongoose.model("Issue", IssueModel);
