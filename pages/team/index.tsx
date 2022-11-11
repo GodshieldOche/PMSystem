@@ -60,7 +60,7 @@ export default function App(props: any) {
       setTeams(response.data.organisation.members);
       setActiveOrganization(response.data.organisation);
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
 

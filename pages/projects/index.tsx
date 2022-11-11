@@ -70,7 +70,7 @@ export default function App(props:any) {
         alert("Issues creating Project, Try again");
       }
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
 
