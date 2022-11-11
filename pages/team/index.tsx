@@ -1,15 +1,12 @@
 import type { AppProps } from "next/app";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { User } from "../../typedefs";
 import { getToken } from "../../helper";
 
-export default function App(props: any) {
+export default function App(props:any) {
   const [search, setSearch] = useState("");
   const [teams, setTeams] = useState<any[]>([]);
-  const [activeOrganization, setActiveOrganization] = useState<any>([]);
   const [searchedUsers, setSearchedUsers] = useState<any[]>([]);
-  const currentUser = props.currentUser;
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
@@ -30,7 +27,7 @@ export default function App(props: any) {
       `/api/invite`,
       {
         email: search,
-        organisationId: activeOrganization._id,
+        organisationId: props.organisation?.organisation?._id,
       },
       {
         headers: {
@@ -41,7 +38,12 @@ export default function App(props: any) {
       }
     );
 
-    console.log(response);
+    if (response.status == 201) {
+            alert("Invitation Sent successfully");
+            setSearch('');
+    } else {
+        alert("Issues Sending Invitation, Try again");
+    }
   };
 
   const fetchOrganizationDetails = async (id: any) => {
@@ -56,23 +58,25 @@ export default function App(props: any) {
         },
       });
       setTeams(response.data.organisation.members);
-      setActiveOrganization(response.data.organisation);
     } catch (error) {
       console.log(error);
     }
   };
 
+
   useEffect(() => {
+    
     let active: any = localStorage.getItem("activeOrganization");
     if (active !== null) {
-      active = JSON.parse(active);
-      fetchOrganizationDetails(active._id);
+        active = JSON.parse(active);
+        fetchOrganizationDetails(active._id);
     } else {
-      fetchOrganizationDetails(
-        currentUser?.organisations[0]?.organisationId._id
-      );
+        fetchOrganizationDetails(
+            props.user?.organisations[0]?.organisationId?._id
+        );
     }
-  }, [currentUser?.organisations]);
+
+  }, [props.user?.length]);
 
   return (
     <div className="team">

@@ -15,8 +15,11 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
   const [smallScreen, setSmallScreen] = useState(false);
 
   const [activeOrganization, setActiveOrganization] = useState<any>({});
+  const [user, setUser] = useState(currentUser);
+
+
   const [organizations, setOrganizations] = useState(
-    currentUser?.organisations
+    user?.organisations
   );
   const [organizationDetails, setOrganizationDetails] = useState([]);
 
@@ -25,7 +28,7 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
   const [inputs, setInputs] = useState({
     name: "",
     description: "",
-    superadmin: currentUser?._id,
+    superAdmin: currentUser?._id,
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,25 +51,47 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
         },
       });
       setOrganizationDetails(response.data);
+      setActiveOrganization(response.data.organisation);
 
     } catch (error) {
       console.log(error);
     }
   };
 
+  const getCurrentUser = async () =>{
+    let token = await getToken();
+
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.token}`,
+      },
+    };
+    const res = await axios.get(`/api/users`, requestOptions);
+    setUser(res.data.currentUser);
+    return res.data.currentUser;
+
+
+  }
+
   useEffect(() => {
-    let active: any = localStorage.getItem("activeOrganization");
-    if (active !== null) {
-      active = JSON.parse(active);
-      fetchOrganizationDetails(active._id);
-      setActiveOrganization(active);
-    } else {
-      fetchOrganizationDetails(
-        currentUser?.organisations[0]?.organisationId._id
-      );
-      setActiveOrganization(currentUser?.organisations[0]?.organisationId);
-    }
-  }, [currentUser?.organisations]);
+    getCurrentUser().then((user)=>
+    {
+      let active: any = localStorage.getItem("activeOrganization");
+      if (active !== null) {
+        active = JSON.parse(active);
+        fetchOrganizationDetails(active._id);
+        setActiveOrganization(active);
+      } else {
+        fetchOrganizationDetails(
+          user?.organisations[0]?.organisationId?._id
+        );
+        setActiveOrganization(user?.organisations[0]?.organisationId);
+      }
+    });
+    
+  }, [user?.length]);
 
   const changeOrganization = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const id = event.target.value;
@@ -98,6 +123,7 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
       if (response.status == 201) {
         alert("Organization created successfully");
         location.reload();
+        setModal(false)
       } else {
         alert("Issues creating organization, Try again");
       }
@@ -117,7 +143,7 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
               <Header
                 activeOrganization={activeOrganization?.name}
                 organizations={organizations}
-                user={currentUser}
+                user={user}
               ></Header>
 
               <div className="main-content-dashboard">
@@ -148,7 +174,12 @@ const Layout: React.FC<Props> = ({ children, currentUser }) => {
                   </div>
                 </div>
 
-                {children}
+                {React.cloneElement(children as React.ReactElement<any>, {
+                  user: user,
+                  organisation:organizationDetails,
+                  activeorganization:activeOrganization
+                })}
+
               </div>
             </div>
           </>

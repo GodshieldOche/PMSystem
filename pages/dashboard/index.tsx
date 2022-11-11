@@ -1,8 +1,8 @@
 export default function Dashboard(props: any) {
-  console.log(props);
   return (
     <div>
       <div className="stats">
+        {props.user?.fullName}
         <div className="stats-cards">
           <p>Team</p>
           <h3>5</h3>

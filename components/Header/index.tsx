@@ -2,6 +2,9 @@ import React, {useState, useEffect} from "react";
 import { useRouter } from "next/router";
 import { User } from "../../typedefs";
 import { userAgent } from "next/server";
+import { getToken } from "../../helper";
+import axios from "axios";
+
 
 interface Props {
   organizations: any[];
@@ -26,6 +29,30 @@ const index: React.FC<Props> = ({
     }
   };
 
+  const acceptInvite = async (id:any) =>{
+    let token = await getToken();
+    const response = await axios.post(
+      `/api/invite/accept`,
+      {
+        organisation: id,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.token}`,
+          Accept: "application/json",
+        },
+      }
+    );
+
+    if (response.status == 200) {
+      alert("Invite accepted successfully");
+      location.reload();
+    } else {
+      alert("Issues accepting invite, Try again");
+    }
+  }
+
   const messages = user?.inbox;
   
 
@@ -37,7 +64,7 @@ const index: React.FC<Props> = ({
         {organizations?.length >= 1 ? (
           <>
             {activeOrganization}: {""}
-            {router.pathname.substring(1, router.pathname.length)}
+            {router.pathname.substring(1, router.pathname.length).toUpperCase()}
           </>
         ) : (
           <div>Add or Join an Organisation</div>
@@ -56,8 +83,8 @@ const index: React.FC<Props> = ({
                 messages.map((item,index) =>{
                   return <div key={index} className="notiBox-content">
 
-                  <p>Emeka Invited You To Join Edu Concept Organization</p>
-                  <button>Accept</button>
+                  <p>{item.message}</p>
+                  <button onClick={() => acceptInvite(item.organisation)}>Accept</button>
 
                   </div>
                 }):

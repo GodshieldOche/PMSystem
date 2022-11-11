@@ -7,5 +7,6 @@ export type User = {
   workingOn: number;
   organisations: any[];
   createdAt: string;
+  length:number;
   __v: number;
 };

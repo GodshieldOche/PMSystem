@@ -5,9 +5,11 @@ import { User } from "../../typedefs";
 import { getToken } from "../../helper";
 
 export default function App(props:any) {
-    const currentUser = props.currentUser;
     const [modal, setModal] = useState(false);
     const [activeOrganization, setActiveOrganization] = useState<any>([]);
+    const [currentUser, setCurrentUser] = useState<any>([]);
+    const [projects, setProjects] = useState<any>([]);
+
     const [inputs, setInputs] = useState({
         name: "",
         description: "",
@@ -19,34 +21,28 @@ export default function App(props:any) {
     setInputs((values) => ({ ...values, [name]: value }));
   };
 
-  const fetchOrganizationDetails = async (id: any) => {
+
+  const getCurrentUser = async () =>{
     let token = await getToken();
 
-    try {
-      const response = await axios.get(`/api/organisations/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token.token}`,
-          Accept: "application/json",
-        },
-      });
-      setActiveOrganization(response.data.organisation);
-    } catch (error) {
-      alert(error);
-    }
-  };
-
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.token}`,
+      },
+    };
+    const res = await axios.get(`/api/users`, requestOptions);
+    setCurrentUser(res.data.currentUser);
+    return res.data.currentUser;
+  }
   useEffect(() => {
-    let active: any = localStorage.getItem("activeOrganization");
-    if (active !== null) {
-      active = JSON.parse(active);
-      fetchOrganizationDetails(active._id);
-    } else {
-      fetchOrganizationDetails(
-        currentUser?.organisations[0]?.organisationId._id
-      );
-    }
-  }, [currentUser?.organisations]);
+    setProjects(props.organisation?.organisation?.projects);  
+      console.log(props.organisation.organisation)
+  }, [])
+  
+
+ 
   
 
   const createProject = async (
@@ -56,7 +52,7 @@ export default function App(props:any) {
 
     let token = await getToken();
     try {
-      const response = await axios.post(`/api/projects`, {name:inputs.name, description: inputs.description, organisation:activeOrganization._id}, {
+      const response = await axios.post(`/api/projects`, {name:inputs.name, description: inputs.description, organisation:props.organisation?.organisation?._id}, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token.token}`,
@@ -66,6 +62,7 @@ export default function App(props:any) {
       if (response.status == 201) {
         alert("Project created successfully");
         location.reload();
+        setModal(false);
       } else {
         alert("Issues creating Project, Try again");
       }
@@ -73,6 +70,7 @@ export default function App(props:any) {
       console.log(error);
     }
   };
+  
 
 
   return (
@@ -106,46 +104,55 @@ export default function App(props:any) {
             </div>
 
             <p className="today">
-                Open Projects
+              Projects
             </p>
 
-            <div className="transactions-card">
-                <div className="start">
-                    <i className="fa fa-arrow-down"></i>
-                    <div className="details">
-                        <p>Cash Application</p>
-                        <p className="amount">3 members</p>
+            {projects?.length? 
+            
+              projects.map((proj:{name:string, issues:number, date:Date, status:boolean},index:number) =>{ return <div key={index} className="transactions-card">
+                    <div className="start">
+                        <i className={proj.status? "fa fa-arrow-down": "fa fa-arrow-up"}></i>
+                        <div className="details">
+                            <p>{proj.name}</p>
+                            <p className="amount">3 members</p>
+                        </div>
                     </div>
-                </div>
 
-                <div className="end">
-                    <p className="date">Oct 25</p>
-                    <p className="coin-amount">Issues: 4</p>
-                    
-                </div>
+                    <div className="end">
+                        <p className="date">Oct 25</p>
+                        <p className="coin-amount">Issues: {proj.issues}</p>
+                        
+                    </div>
 
-            </div>
+                </div>}): <p>No Projects Yet</p>
+            
+            }
 
-            <p className="today">
+            
+
+            {/* <p className="today">
                 Completed Projects
             </p>
+            {projects && !projects.status 
+            
+            &&
+              <div className="transactions-card">
+                  <div className="start">
+                      <i className="fa fa-arrow-up"></i>
+                      <div className="details">
+                          <p>CoinSys Website</p>
+                          <p className="amount">3 members</p>
+                      </div>
+                  </div>
 
-            <div className="transactions-card">
-                <div className="start">
-                    <i className="fa fa-arrow-up"></i>
-                    <div className="details">
-                        <p>CoinSys Website</p>
-                        <p className="amount">3 members</p>
-                    </div>
-                </div>
+                  <div className="end">
+                      <p className="date">Oct 25</p>
+                      <p className="coin-amount">Issues: 4</p>
+                      
+                  </div>
 
-                <div className="end">
-                    <p className="date">Oct 25</p>
-                    <p className="coin-amount">Issues: 4</p>
-                    
-                </div>
-
-            </div>
+              </div>
+            } */}
 
         </div>
 
